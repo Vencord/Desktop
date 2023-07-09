@@ -33,6 +33,7 @@ export default function SettingsUi() {
             "Disable minimum window size",
             "Allows you to make the window as small as your heart desires"
         ],
+        ["splashTheming", "Splash theming", "Adapt the splash window colors to your custom theme", false],
         [
             "openLinksWithElectron",
             "Open Links in app (experimental)",

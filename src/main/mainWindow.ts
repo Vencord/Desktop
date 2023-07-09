@@ -4,7 +4,15 @@
  * Copyright (c) 2023 Vendicated and Vencord contributors
  */
 
-import { app, BrowserWindow, BrowserWindowConstructorOptions, Menu, MenuItemConstructorOptions, Tray } from "electron";
+import {
+    app,
+    BrowserWindow,
+    BrowserWindowConstructorOptions,
+    Menu,
+    MenuItemConstructorOptions,
+    nativeTheme,
+    Tray
+} from "electron";
 import { join } from "path";
 import { IpcEvents } from "shared/IpcEvents";
 import { isTruthy } from "shared/utils/guards";
@@ -274,17 +282,22 @@ function createMainWindow() {
         },
         icon: ICON_PATH,
         frame: VencordSettings.store.frameless !== true,
-        ...(Settings.store.transparencyOption !== "none"
+        ...(Settings.store.transparencyOption && Settings.store.transparencyOption !== "none"
             ? {
                   backgroundColor: "#00000000",
                   backgroundMaterial: Settings.store.transparencyOption,
                   transparent: true
               }
             : {
+                  backgroundColor: Settings.store.splashTheming
+                      ? Settings.store.splashBackground
+                      : nativeTheme.shouldUseDarkColors
+                      ? "#313338"
+                      : "#ffffff",
                   transparent: false
               }),
         ...(Settings.store.staticTitle ? { title: "Vencord" } : {}),
-        ...(VencordSettings.store.macosTranslucency
+        ...((VencordSettings.store.macosTranslucency as boolean)
             ? {
                   vibrancy: "sidebar",
                   backgroundColor: "#ffffff00"
@@ -332,7 +345,7 @@ function createMainWindow() {
 const runVencordMain = once(() => require(join(VENCORD_FILES_DIR, "vencordDesktopMain.js")));
 
 export async function createWindows() {
-    const splash = createSplashWindow();
+    const splash = await createSplashWindow();
 
     await ensureVencordFiles();
     runVencordMain();
