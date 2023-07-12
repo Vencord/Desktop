@@ -23,4 +23,8 @@ export interface Settings {
     appBadge?: boolean;
 
     firstLaunch?: boolean;
+
+    splashTheming?: boolean;
+    splashColor?: string;
+    splashBackground?: string;
 }
